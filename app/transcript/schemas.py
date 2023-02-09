@@ -1,6 +1,7 @@
 from datetime import datetime
 from enum import Enum
 from typing import List
+
 from pydantic import BaseModel
 
 
@@ -19,6 +20,7 @@ class TranscriptItem(BaseModel):
     end: int
     text: str
 
+
 class TranscriptResponse(BaseModel):
     id: int
     status: TranscriptStatusEnum
@@ -31,9 +33,7 @@ class TranscriptWordsResponse(BaseModel):
     items: List[TranscriptItem] = None
 
 
-
-
 class Audio(BaseModel):
     id: int
-    filename: str
+    location: str
     created_at: datetime = datetime.utcnow()
