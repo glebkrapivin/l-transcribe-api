@@ -7,8 +7,8 @@ from fastapi import UploadFile
 from pydub import AudioSegment
 from sqlalchemy.orm import Session
 
+from app.audio import models as m
 from app.core.config import settings
-from app.transcript import models as m
 
 
 def get_raw_bytes(db: Session, audio_id: int, start: int, end: int) -> BytesIO:
@@ -38,8 +38,10 @@ def delete_by_id(db: Session, audio_id: int):
     db.query(m.Audio).filter(m.Audio.id == audio_id).delete()
     db.commit()
 
+
 def get_by_id(db: Session, audio_id: int):
     return db.query(m.Audio).filter(m.Audio.id == audio_id).first()
+
 
 def list_audio(db: Session):
     res = db.query(m.Audio).all()
