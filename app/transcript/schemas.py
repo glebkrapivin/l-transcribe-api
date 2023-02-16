@@ -6,31 +6,52 @@ from pydantic import BaseModel
 
 
 class TranscriptStatusEnum(str, Enum):
-    IN_PROGRESS = 'in_progress'
-    SUCCESS = 'success'
-    FAILURE = 'failure'
+    IN_PROGRESS = "in_progress"
+    SUCCESS = "success"
+    FAILURE = "failure"
 
 
-class TranscriptRequest(BaseModel):
+class TranscriptBase(BaseModel):
     audio_id: int
 
-
-class TranscriptItem(BaseModel):
-    start: int
-    end: int
-    text: str
+    class Config:
+        orm_mode = True
 
 
-class TranscriptResponse(BaseModel):
+class TranscriptCreate(TranscriptBase):
+    pass
+
+
+class Transcript(TranscriptBase):
     id: int
     status: TranscriptStatusEnum
     created_at: datetime = datetime.utcnow()
     updated_at: datetime = datetime.utcnow()
-    items: List[TranscriptItem] = None
+    text: str
 
 
-class TranscriptWordsResponse(BaseModel):
-    items: List[TranscriptItem] = None
+class TranscriptItemBase(BaseModel):
+    start_at: int
+    stop_at: int
+    text: str
+
+    class Config:
+        orm_mode = True
 
 
+class AnalysisItem(BaseModel):
+    transcript_id: int
+    filename: str
+    audio_id: int
+    start_at: int
 
+    class Config:
+        orm_mode = True
+
+
+class Analysis(BaseModel):
+    word: str
+    items: List[AnalysisItem]
+
+    class Config:
+        orm_mode = True

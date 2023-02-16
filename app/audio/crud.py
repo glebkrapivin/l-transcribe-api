@@ -5,18 +5,22 @@ from io import BytesIO
 
 from fastapi import UploadFile
 from pydub import AudioSegment
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.audio import models as m
 from app.core.config import settings
 
 
+class FilenameExists(Exception):
+    pass
+
 def get_raw_bytes(db: Session, audio_id: int, start: int, end: int) -> BytesIO:
     audio = get_by_id(db, audio_id)
     audiosegment = AudioSegment.from_mp3(audio.location)
     b = BytesIO()
     if start and end:
-        audiosegment = audiosegment[start: end]
+        audiosegment = audiosegment[start:end]
     audiosegment.export(b)
     return b
 
@@ -24,11 +28,16 @@ def get_raw_bytes(db: Session, audio_id: int, start: int, end: int) -> BytesIO:
 def create(db: Session, b: UploadFile):
     _uuid = str(uuid.uuid4())
     filepath = os.path.join(settings.AUDIOFILES_DIRECTORY, _uuid)
-    f = open(filepath, 'wb')
+    f = open(filepath, "wb")
     shutil.copyfileobj(b.file, f)
-    db_audio = m.Audio(location=filepath)
+    db_audio = m.Audio(
+        location=filepath, original_filename=b.filename, size=os.path.getsize(filepath)
+    )
     db.add(db_audio)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError as e:
+        raise FilenameExists(str(e))
     return db_audio
 
 

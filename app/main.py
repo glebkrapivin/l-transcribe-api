@@ -1,22 +1,23 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware import Middleware
 
 from app.core.config import settings
 from app.transcript.api import v1 as tv1
 from app.audio.api import v1 as av1
 
 def get_application():
-    _app = FastAPI(title=settings.PROJECT_NAME)
 
-    _app.add_middleware(
-        CORSMiddleware,
-        allow_origins=[str(origin) for origin in settings.BACKEND_CORS_ORIGINS],
-        allow_credentials=True,
+    cors=  Middleware(  CORSMiddleware,
+        #allow_origins=[str(origin) for origin in settings.BACKEND_CORS_ORIGINS],
+        allow_origins=["*"],
+        #allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
-    )
+                        )
 
+    _app = FastAPI(title=settings.PROJECT_NAME, middleware=[cors])
     return _app
 
 
