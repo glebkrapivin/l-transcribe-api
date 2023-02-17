@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block custom_js %}
+    <script>
+        function get_data($) {
+            const url = 'http://localhost:8000/api/v1/transcript';
+            $.get(url, function (data) {
+
+                var table2 = $.makeTable(data)
+                // my table
+                $(table2).appendTo("#forTable")
+            })
+        }
+        $(document).ready(
+            function () {
+                get_data($)
+            }
+        )
+    </script>
+{% endblock %}
+{% block content %}
+    <div id="forSpinner" class="text-center mt-5"></div>
+    <div class="row justify-content-center">
+        <div class="table-responsive" id="forTable"></div>
+    </div>
+{% endblock %}
