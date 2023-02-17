@@ -2,8 +2,9 @@ from typing import List
 
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
-import app.transcript.models as m
+
 import app.audio.crud as a_crud
+import app.transcript.models as m
 
 
 class NotFound(Exception):
@@ -19,8 +20,9 @@ def create_transcript(db: Session, audio_id: int):
     if not audio:
         raise NotFound()
 
-    external_id = 1
-    t = m.Transcript(status=m.TranscriptStatusEnum.IN_PROGRESS, external_id=external_id)
+    import random
+    external_id = random.randint(1, 50000)
+    t = m.Transcript(audio_id=audio_id, status=m.TranscriptStatusEnum.IN_PROGRESS, external_id=external_id)
     db.add(t)
     try:
         db.commit()

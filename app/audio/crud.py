@@ -54,5 +54,4 @@ def get_by_id(db: Session, audio_id: int):
 
 def list_audio(db: Session):
     res = db.query(m.Audio).all()
-    print(res)
     return res

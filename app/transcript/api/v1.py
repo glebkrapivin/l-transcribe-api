@@ -1,12 +1,15 @@
+import dataclasses
 from typing import List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 
 import app.transcript.schemas as s
 import app.transcript.models as m
 import app.transcript.crud as c
 from app.audio.api.v1 import get_db
+
+
 
 router = APIRouter(prefix="/api/v1")
 
@@ -27,7 +30,7 @@ def create_new_transcript(
 
 
 @router.get(
-    "/transcript/{transcript_id}", tags=["Transcript"], response_model=s.Transcript
+    "/transcript/{transcript_id}", tags=["Transcript"], response_model=s.TranscriptDetail
 )
 def get_transcript_by_id(transcript_id: int, db: Session = Depends(get_db)):
     return db.query(m.Transcript).filter(m.Transcript.id == transcript_id).first()

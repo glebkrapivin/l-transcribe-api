@@ -37,7 +37,9 @@ class Transcript(Base):
 
     items = relationship("TranscriptItem", back_populates="transcript")
     audio = relationship("Audio")
-    __table_args__ = (UniqueConstraint("external_id", name="one_external_id"),)
+    __table_args__ = (UniqueConstraint("external_id", name="one_external_id"),
+                      UniqueConstraint("audio_id", name="one_audio_id")
+                      )
 
 
 class TranscriptItem(Base):

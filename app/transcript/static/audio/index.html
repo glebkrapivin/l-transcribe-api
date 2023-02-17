@@ -1,0 +1,114 @@
+<html>
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css"
+      integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.6.3.js" type="text/javascript"></script>
+
+<script>
+
+    $.makeTable = function (mydata) {
+    var table = $('<table class="table table-borderless text-center">');
+    var tblHeader = "<tr>";
+    for (var k in mydata[0]) tblHeader += "<th>" + k + "</th>";
+    tblHeader += "</tr>";
+    $(tblHeader).appendTo(table);
+    $.each(mydata, function (index, value) {
+        var TableRow = "<tr>";
+        $.each(value, function (key, val) {
+            TableRow += "<td>" + val + "</td>";
+        });
+        TableRow += "</tr>";
+        $(table).append(TableRow);
+    });
+    return ($(table));
+    };
+       function get_data($) {
+           const url = 'http://localhost:8000/api/v1/audio';
+            $.get(url,  function (data) {
+
+                var table2 = $.makeTable(data)
+                // my table
+                $(table2).appendTo("#forTable")
+            })
+        }
+
+    
+    $(document).ready(
+
+
+        function() {
+            get_data($)
+        }
+    )
+</script>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="/audio">Audios</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/transcript">Transcripts</a>
+      </li>
+    </ul>
+  </div>
+    <form class="form-inline my-2 my-lg-0" action="http://localhost:8000/transcript/new">
+      <button class="btn btn-dark">Add Audio</button>
+    </form>
+</nav>
+<div class="container pt-5">
+    <div class="well">
+        <div class="row justify-content-center">
+                <div class="table-responsive" id="forTable"></div>
+        </div>
+
+        <div id="result" style="display: none">
+            <div class="text-center mt-5">
+                <h5>
+                    Results
+                </h5>
+            </div>
+            <table class="table table-borderless">
+                <tbody>
+                <tr>
+                    <th scope="row">1</th>
+                    <td>Abracadabra is nice</td>
+                    <td>
+                        <audio id="blast" controls></audio>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">2</th>
+                    <td>Abracadabra is great</td>
+                    <td>
+                        <audio id="blast" controls></audio>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">3</th>
+                    <td>That's what Abracadabra said</td>
+                    <td>
+                        <audio id="blast" controls></audio>
+                    </td>
+                </tr>
+
+
+                </tbody>
+            </table>
+        </div>
+
+
+    </div>
+</div>
+</body>
+</html>

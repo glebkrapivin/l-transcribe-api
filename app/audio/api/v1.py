@@ -12,7 +12,7 @@ from app.core.utils import get_db
 router = APIRouter(prefix="/api/v1", tags=["Audio"])
 
 
-@router.post("/audio/", )
+@router.post("/audio/", response_model=s.Audio)
 def upload_an_audio_for_transcript(file: UploadFile = File(...), db: Session = Depends(get_db)):
     # TODO:
     #  1. Sync upload / save
