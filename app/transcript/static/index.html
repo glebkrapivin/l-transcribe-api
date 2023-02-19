@@ -36,7 +36,7 @@
         var TableRow = "<tr>";
 
         TableRow += "<td>" + value.filename + "</td>";
-        TableRow += "<td>" + "<audio controls preload=\"none\" src='/api/v1/audio/" + value.audio_id+"/raw?start="+ (value.start_at-5) +"?end="+(value.start_at+5)+"'</audio>" + "</td>";
+        TableRow += "<td>" + "<audio controls preload=\"none\" src='/api/v1/audio/" + value.audio_id+"/raw?start="+ (Math.max(value.start_at-5000, 0)+1) +"&end="+(value.start_at+5000)+"'</audio>" + "</td>";
         TableRow += "</tr>";
         $(table).append(TableRow);
     });

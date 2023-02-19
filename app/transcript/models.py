@@ -14,12 +14,12 @@ from sqlalchemy.sql import func
 from app.database import Base
 from app.transcript.schemas import TranscriptStatusEnum, TranscriptLanguageEnum
 
-
-class Word(Base):
-    id = Column(Integer, primary_key=True)
-    text = Column(String)
-
-    __table_args__ = (UniqueConstraint("text", name="one_text"),)
+#
+# class Word(Base):
+#     id = Column(Integer, primary_key=True)
+#     text = Column(String)
+#
+#     __table_args__ = (UniqueConstraint("text", name="one_text"),)
 
 
 class Transcript(Base):
@@ -33,7 +33,7 @@ class Transcript(Base):
     language = Column(Enum(TranscriptLanguageEnum), nullable=False, default=TranscriptLanguageEnum.ENGLISH,
                       server_default=TranscriptLanguageEnum.ENGLISH.upper())
     audio_id = Column(Integer, ForeignKey("audio.id"))
-    external_id = Column(Integer, nullable=False)
+    external_id = Column(String, nullable=False)
     created_at = Column(DateTime, server_default=func.now())  # type: ignore
     updated_at = Column(DateTime, server_default=func.now())  # type: ignore
 
@@ -47,9 +47,11 @@ class Transcript(Base):
 class TranscriptItem(Base):
     id = Column(Integer, primary_key=True)
     transcript_id = Column(Integer, ForeignKey("transcript.id"))
-    word_id = Column(Integer, ForeignKey("word.id"))
+    # word_id = Column(Integer, ForeignKey("word.id"))
     start_at = Column(Integer)
     stop_at = Column(Integer)
+    speaker_tag = Column(Integer, nullable=True)
 
-    word = relationship("Word")
+    word = Column(Text, nullable=False)
+    # word = relationship("Word")
     transcript = relationship("Transcript", back_populates="items")

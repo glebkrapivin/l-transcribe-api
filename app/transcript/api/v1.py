@@ -1,14 +1,15 @@
-import dataclasses
+import logging
 from typing import List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi_utils.tasks import repeat_every
 from sqlalchemy.orm import Session
 
-import app.transcript.schemas as s
-import app.transcript.models as m
 import app.transcript.crud as c
+import app.transcript.models as m
+import app.transcript.schemas as s
 from app.audio.api.v1 import get_db
-
+from app.database import SessionLocal
 
 
 router = APIRouter(prefix="/api/v1")
@@ -16,7 +17,7 @@ router = APIRouter(prefix="/api/v1")
 
 @router.post("/transcript", tags=["Transcript"], response_model=s.Transcript)
 def create_new_transcript(
-    transcript_request: s.TranscriptCreate, db: Session = Depends(get_db)
+        transcript_request: s.TranscriptCreate, db: Session = Depends(get_db)
 ):
     try:
         t = c.create_transcript(db, transcript_request.audio_id, transcript_request.language)
@@ -76,3 +77,16 @@ def get_transcripts_by_word(word: str, db: Session = Depends(get_db)):
         an_items.append(obj)
     result = s.Analysis(word=word, items=an_items)
     return result
+
+
+@router.on_event('startup')
+@repeat_every(seconds=60)
+def update_transcripts_from_provider() -> None:
+    logging.info('Test here')
+    db = SessionLocal()
+    try:
+        c.update_transcripts_status(db)
+    except Exception as e:
+        logging.exception(e)
+    finally:
+        db.close()

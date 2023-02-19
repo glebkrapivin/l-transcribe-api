@@ -1,39 +1,33 @@
-# Import the Speech-to-Text client library
-from google.cloud import speech
+from google.api_core import operation, exceptions
+from google.cloud import speech_v1p1beta1 as speech
+from google.longrunning import operations_pb2
+import logging
 
-# Instantiates a client
+
+# API and auth not straighforward
+# GOOGLE_APPLICATION_CREDENTIALS needs to be exported with key to the service account
 client = speech.SpeechClient()
 
-# The name of the audio file to transcribe
-gcs_uri = "gs://leela_bucket/transcripts/3_min_rec.mp3"
+def _get_lightweight_operation(name: str) -> operations_pb2.Operation:
+    # seems like a lazy init
+    _ = client.transport.operations_client
+    logging.info('%s', type(name))
+    lightweight_operation: operations_pb2.Operation = client.transport._operations_client.get_operation(name)
+    return lightweight_operation
 
-def transcribe_speech():
-  audio = speech.RecognitionAudio(uri=gcs_uri)
 
-  config = speech.RecognitionConfig(
-    encoding=speech.RecognitionConfig.AudioEncoding.MP3,
-    sample_rate_hertz=44100,
-    language_code="es-ES",
-    model="phone_call",
-    audio_channel_count=2,
-    enable_word_confidence=True,
-    use_enhanced=True,
-    enable_word_time_offsets=True,
-    max_alternatives=4,
-    diarization_config=speech.SpeakerDiarizationConfig(
-      enable_speaker_diarization=True,
-      min_speaker_count=2,
-      max_speaker_count=2,
-    ),
-  )
+def get_transcript_result(name: str) -> speech.LongRunningRecognizeResponse:
+    # TODO: there is NO decent exception handling
+    lightweight_operation = _get_lightweight_operation(name)
+    response: operation.Operation = operation.from_gapic(
+        lightweight_operation,
+        client.transport._operations_client,
+        speech.types.LongRunningRecognizeResponse,
+        metadata_type=speech.types.LongRunningRecognizeMetadata,
+    )
+    return response.result()
 
-  # Detects speech in the audio file
-  operation = client.long_running_recognize(config=config, audio=audio)
+def get_transcript_status(name: str) -> bool:
 
-  print("Waiting for operation to complete...")
-  response = operation.result(timeout=90)
-
-  for result in response.results:
-    print("Transcript: {}".format(result.alternatives[0].transcript))
-
-transcribe_speech()
+    lightweight_operation = _get_lightweight_operation(name)
+    return lightweight_operation.done
