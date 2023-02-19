@@ -8,6 +8,7 @@ jobs:
       - name: Make envfile
         run: |
           echo "${{ secrets.env_file }}" > .env
+          echo $pwd
       - name: checkout repo
         uses: actions/checkout@v2
       - name: cat makefile
