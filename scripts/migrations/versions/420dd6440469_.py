@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: fbb69bbd9312
+Revision ID: 420dd6440469
 Revises: 
-Create Date: 2023-02-16 22:26:30.181941
+Create Date: 2023-02-19 19:40:48.645949
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'fbb69bbd9312'
+revision = '420dd6440469'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -22,7 +22,7 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('location', sa.String(), nullable=False),
     sa.Column('size', sa.Float(), nullable=True),
-    sa.Column('created_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
+    sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=True),
     sa.Column('original_filename', sa.String(), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('original_filename')
@@ -30,18 +30,21 @@ def upgrade() -> None:
     op.create_table('word',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('text', sa.String(), nullable=True),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('text', name='one_text')
     )
     op.create_table('transcript',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('text', sa.Text(), nullable=True),
     sa.Column('status', sa.Enum('IN_PROGRESS', 'SUCCESS', 'FAILURE', name='transcriptstatusenum'), nullable=False),
+    sa.Column('language', sa.Enum('ENGLISH', 'SPANISH', name='transcriptlanguageenum'), server_default='ENGLISH', nullable=False),
     sa.Column('audio_id', sa.Integer(), nullable=True),
     sa.Column('external_id', sa.Integer(), nullable=False),
-    sa.Column('created_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
-    sa.Column('updated_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
+    sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), server_default=sa.text('now()'), nullable=True),
     sa.ForeignKeyConstraint(['audio_id'], ['audio.id'], ),
     sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('audio_id', name='one_audio_id'),
     sa.UniqueConstraint('external_id', name='one_external_id')
     )
     op.create_table('transcriptitem',

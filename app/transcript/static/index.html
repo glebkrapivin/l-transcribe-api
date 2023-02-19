@@ -36,7 +36,7 @@
         var TableRow = "<tr>";
 
         TableRow += "<td>" + value.filename + "</td>";
-        TableRow += "<td>" + "<audio controls preload=\"none\" src='http://localhost:8000/api/v1/audio/" + value.audio_id+"/raw?start="+ (value.start_at-5) +"?end="+(value.start_at+5)+"'</audio>" + "</td>";
+        TableRow += "<td>" + "<audio controls preload=\"none\" src='/api/v1/audio/" + value.audio_id+"/raw?start="+ (value.start_at-5) +"?end="+(value.start_at+5)+"'</audio>" + "</td>";
         TableRow += "</tr>";
         $(table).append(TableRow);
     });
@@ -44,7 +44,7 @@
 };
        function get_data($) {
 
-           const url = 'http://localhost:8000/api/v1/analysis';
+           const url = '/api/v1/analysis';
            var word = $("#wordInput").val();
            var data = {word:word}
             $.get(url, data, function (data) {

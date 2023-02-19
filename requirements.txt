@@ -6,4 +6,5 @@ aiofiles
 python-dotenv==0.21.1
 pydantic[dotenv]
 python-multipart
-google-cloud-speech
+psycopg2-binary
+alembic

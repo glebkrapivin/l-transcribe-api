@@ -24,7 +24,7 @@
     return ($(table));
     };
        function get_data($) {
-           const url = 'http://localhost:8000/api/v1/audio';
+           const url = '/api/v1/audio';
             $.get(url,  function (data) {
 
                 var table2 = $.makeTable(data)
@@ -62,7 +62,7 @@
       </li>
     </ul>
   </div>
-    <form class="form-inline my-2 my-lg-0" action="http://localhost:8000/transcript/new">
+    <form class="form-inline my-2 my-lg-0" action="/transcript/new">
       <button class="btn btn-dark">Add Audio</button>
     </form>
 </nav>

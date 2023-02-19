@@ -20,6 +20,10 @@
                     TableRow += '<td><span class="badge badge-primary">In Progress</span></td>'
                 } else if (val ==="success") {
                     TableRow += '<td><span class="badge badge-sucess">Success</span></td>'
+                } else if (val ==="english") {
+                    TableRow += '<td><span class="badge badge-warning">english</span></td>'
+                } else if (val ==="spanish") {
+                    TableRow += '<td><span class="badge badge-danger">spanish</span></td>'
                 } else {
                     TableRow += "<td>" + val + "</td>";
                 }
@@ -32,7 +36,7 @@
     };
 
     function get_data($) {
-        const url = 'http://localhost:8000/api/v1/transcript';
+        const url = '/api/v1/transcript';
         $.get(url, function (data) {
 
             var table2 = $.makeTable(data)
@@ -69,7 +73,7 @@
             </li>
         </ul>
     </div>
-    <form class="form-inline my-2 my-lg-0" action="http://localhost:8000/transcript/new">
+    <form class="form-inline my-2 my-lg-0" action="/transcript/new">
         <button class="btn btn-dark">Add Audio</button>
     </form>
 </nav>

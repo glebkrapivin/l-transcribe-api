@@ -11,7 +11,7 @@ const handleSubmit = (event) => {
     }
     var audio_id;
     var language;
-    fetch("http://localhost:8000/api/v1/audio/", {
+    fetch("/api/v1/audio/", {
         method: "post", body: formData,
     }).then((response) => {
         if (response.status != 200) {
@@ -25,7 +25,7 @@ const handleSubmit = (event) => {
             language = $('input[name="customRadioInline1"]:checked').val()
             console.log(result.id)
             console.log('Audio uploaded')
-            fetch("http://localhost:8000/api/v1/transcript", {
+            fetch("/api/v1/transcript", {
                 method: "post", body: JSON.stringify({audio_id: audio_id, language: language}), headers: {
                     'Content-Type': 'application/json',
                 },
