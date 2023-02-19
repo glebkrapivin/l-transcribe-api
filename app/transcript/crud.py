@@ -15,14 +15,15 @@ class AlreadyExists(Exception):
     pass
 
 
-def create_transcript(db: Session, audio_id: int):
+def create_transcript(db: Session, audio_id: int, language: m.TranscriptLanguageEnum):
     audio = a_crud.get_by_id(db, audio_id)
     if not audio:
         raise NotFound()
 
     import random
     external_id = random.randint(1, 50000)
-    t = m.Transcript(audio_id=audio_id, status=m.TranscriptStatusEnum.IN_PROGRESS, external_id=external_id)
+    t = m.Transcript(audio_id=audio_id, status=m.TranscriptStatusEnum.IN_PROGRESS, external_id=external_id,
+                     language=language)
     db.add(t)
     try:
         db.commit()

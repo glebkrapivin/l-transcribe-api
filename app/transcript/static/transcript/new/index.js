@@ -10,6 +10,7 @@ const handleSubmit = (event) => {
         formData.append("file", file);
     }
     var audio_id;
+    var language;
     fetch("http://localhost:8000/api/v1/audio/", {
         method: "post", body: formData,
     }).then((response) => {
@@ -21,10 +22,11 @@ const handleSubmit = (event) => {
     })
         .then((result) => {
             audio_id = result.id
+            language = $('input[name="customRadioInline1"]:checked').val()
             console.log(result.id)
             console.log('Audio uploaded')
             fetch("http://localhost:8000/api/v1/transcript", {
-                method: "post", body: JSON.stringify({audio_id: audio_id}), headers: {
+                method: "post", body: JSON.stringify({audio_id: audio_id, language: language}), headers: {
                     'Content-Type': 'application/json',
                 },
             }).then((response) => {
@@ -35,6 +37,7 @@ const handleSubmit = (event) => {
                 return response.json()
             }).then((data) => {
                 alert("Success. Transcript id:" + data.id.toString())
+                window.location.replace("/transcript");
             })
         })
         .catch((error) => {

@@ -11,8 +11,14 @@ class TranscriptStatusEnum(str, Enum):
     FAILURE = "failure"
 
 
+class TranscriptLanguageEnum(str, Enum):
+    ENGLISH = 'english'
+    SPANISH = 'spanish'
+
+
 class TranscriptBase(BaseModel):
     audio_id: int
+    language: TranscriptLanguageEnum
 
     class Config:
         orm_mode = True

@@ -16,8 +16,10 @@
         $.each(mydata, function (index, value) {
             var TableRow = "<tr>";
             $.each(value, function (key, val) {
-                if (val == "in_progress") {
-                    TableRow += '<td><span class="badge badge-success">Finished</span></td>'
+                if (val === "in_progress") {
+                    TableRow += '<td><span class="badge badge-primary">In Progress</span></td>'
+                } else if (val ==="success") {
+                    TableRow += '<td><span class="badge badge-sucess">Success</span></td>'
                 } else {
                     TableRow += "<td>" + val + "</td>";
                 }

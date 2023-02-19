@@ -12,7 +12,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
 from app.database import Base
-from app.transcript.schemas import TranscriptStatusEnum
+from app.transcript.schemas import TranscriptStatusEnum, TranscriptLanguageEnum
 
 
 class Word(Base):
@@ -30,6 +30,8 @@ class Transcript(Base):
         nullable=False,
         default=TranscriptStatusEnum.IN_PROGRESS,
     )
+    language = Column(Enum(TranscriptLanguageEnum), nullable=False, default=TranscriptLanguageEnum.ENGLISH,
+                      server_default=TranscriptLanguageEnum.ENGLISH.upper())
     audio_id = Column(Integer, ForeignKey("audio.id"))
     external_id = Column(Integer, nullable=False)
     created_at = Column(DateTime, server_default=func.now())  # type: ignore
