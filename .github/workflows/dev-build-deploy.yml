@@ -5,9 +5,9 @@ jobs:
   build_deploy:
     runs-on: self-hosted
     steps:
-      - name: Make envfile
-        run: echo "${{ secrets.ENV_FILE }}" > /home/gkrapivin/actions-runner/_work/leela/leela/.env
       - name: checkout repo
         uses: actions/checkout@v2
+      - name: Make envfile
+        run: echo "${{ secrets.ENV_FILE }}" > /home/gkrapivin/actions-runner/_work/leela/leela/.env
       - name: cat makefile
         run: docker-compose up -d
