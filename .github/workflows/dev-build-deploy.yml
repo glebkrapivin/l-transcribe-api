@@ -2,7 +2,7 @@ name: dev-build-deploy
 on: [push]
 
 jobs:
-  create-envfile:
+  build_deploy:
     runs-on: self-hosted
     steps:
       - name: Make envfile
@@ -19,11 +19,7 @@ jobs:
           directory: .
           file_name: .env
           fail_on_empty: false
-
-  print_time:
-    runs-on: self-hosted
-    steps:
       - name: checkout repo
         uses: actions/checkout@v2
       - name: cat makefile
-        run: cat Makefile
+        run: docker-compose up -d
