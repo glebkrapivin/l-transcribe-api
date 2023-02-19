@@ -6,19 +6,8 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Make envfile
-        uses: SpicyPizza/create-envfile@v1.3
-        with:
-          # app
-          envkey_PROJECT_NAME: leela
-          envkey_AUDIOFILES_DIRECTORY: "/var/lib/leela/data"
-          envkey_DB_URI: ${{ secrets.DB_URI }}
-          # db
-          envkey_POSTGRES_DB: leela
-          envkey_POSTGRES_USER: leela_admin
-          envkey_POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          directory: .
-          file_name: .env
-          fail_on_empty: false
+        run: |
+          echo "${{ secrets.env_file }}" > .env
       - name: checkout repo
         uses: actions/checkout@v2
       - name: cat makefile
