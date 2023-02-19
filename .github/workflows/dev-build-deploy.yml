@@ -6,8 +6,7 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Make envfile
-        run: |
-          echo "${{ secrets.env_file }}" > /home/gkrapivin/actions-runner/_work/leela/leela/.env
+        run: echo "${{ secrets.ENV_FILE }}" > /home/gkrapivin/actions-runner/_work/leela/leela/.env
       - name: checkout repo
         uses: actions/checkout@v2
       - name: cat makefile
