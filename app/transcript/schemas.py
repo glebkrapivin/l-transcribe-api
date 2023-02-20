@@ -1,7 +1,7 @@
 import json
 from datetime import datetime
 from enum import Enum
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 from pydantic import BaseModel, validator
 
@@ -37,7 +37,9 @@ class Transcript(TranscriptBase):
 
 
 class TranscriptDetail(Transcript):
-    text: str
+    text: Optional[str]
+    external_id: str
+
 
 
 class TranscriptItemBase(BaseModel):

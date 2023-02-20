@@ -20,8 +20,8 @@ def create_new_transcript(
 ):
     try:
         t = c.create_transcript(db, transcript_request.audio_id, transcript_request.language)
-    except c.NotFound:
-        raise HTTPException(status_code=400, detail="No audio_id found")
+    except c.NotFound as e:
+        raise HTTPException(status_code=400, detail=str(e))
     except c.AlreadyExists:
         raise HTTPException(
             status_code=400, detail="Transcript with this audio already exists"

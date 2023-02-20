@@ -1,4 +1,5 @@
 import datetime
+import json
 import logging
 from typing import List
 
@@ -8,7 +9,7 @@ from sqlalchemy.orm import Session
 import app.audio.crud as a_crud
 import app.transcript.models as m
 from app.transcript.transcribers import google_s2t
-import json
+
 
 class NotFound(Exception):
     pass
@@ -23,8 +24,14 @@ def create_transcript(db: Session, audio_id: int, language: m.TranscriptLanguage
     if not audio:
         raise NotFound()
 
-    import random
-    external_id = random.randint(1, 50000)
+    conf = db.query(m.TranscriptConfig) \
+        .filter(m.TranscriptConfig.language == language) \
+        .filter(m.TranscriptConfig.provider == 'google') \
+        .first()
+    if not conf:
+        raise NotFound('Config not found')
+
+    external_id = google_s2t.create_transcript_request(conf.config, audio.location)
     t = m.Transcript(audio_id=audio_id, status=m.TranscriptStatusEnum.IN_PROGRESS, external_id=external_id,
                      language=language)
     db.add(t)
@@ -79,7 +86,7 @@ def update_transcripts_status(db: Session):
             logging.info("Doing transcript with external_id=%s", t.external_id)
             finished = google_s2t.get_transcript_status(t.external_id)
             if finished:
-                result = google_s2t.get_transcript_result(t.external_id)
+                result, uri = google_s2t.get_transcript_result(t.external_id)
                 words = result.results[-1].alternatives[0].words
                 for word in words:
                     start_at = word.start_time.total_seconds() * 1000
@@ -92,6 +99,7 @@ def update_transcripts_status(db: Session):
                 t.status = m.TranscriptStatusEnum.SUCCESS
                 t.updated_at = datetime.datetime.utcnow()
                 logging.info('Marking successful trasnscript_id=%s', t.id)
+                google_s2t.delete_audio(uri, "leela_bucket")
     db.add_all(t_items)
     db.commit()
 
