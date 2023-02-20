@@ -13,7 +13,7 @@ jobs:
       - name: Make envfile
         run: echo "${{ secrets.ENV_FILE }}" > /home/gkrapivin/actions-runner/_work/leela/leela/.env
       - name: Make google-service-account-key
-        run: echo "${{ secrets.GOOGLE_SERVICE_ACCOUNT }}" > /home/gkrapivin/actions-runner/_work/leela/leela/key.json
+        run: echo "${{ secrets.GOOGLE_SERVICE_ACCOUNT }}" | base64 -d > /home/gkrapivin/actions-runner/_work/leela/leela/key.json
       - name: cat makefile
         run: docker-compose up --build -d
 
