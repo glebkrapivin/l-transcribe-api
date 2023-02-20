@@ -14,6 +14,7 @@ from sqlalchemy.sql import func
 from app.database import Base
 from app.transcript.schemas import TranscriptStatusEnum, TranscriptLanguageEnum
 
+
 #
 # class Word(Base):
 #     id = Column(Integer, primary_key=True)
@@ -55,3 +56,10 @@ class TranscriptItem(Base):
     word = Column(Text, nullable=False)
     # word = relationship("Word")
     transcript = relationship("Transcript", back_populates="items")
+
+
+class TranscriptConfig(Base):
+    id = Column(Integer, primary_key=True)
+    language = Column(Enum(TranscriptLanguageEnum), nullable=False)
+    provider = Column(Text, nullable=False)
+    config = Column(Text, nullable=False)

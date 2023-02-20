@@ -1,8 +1,9 @@
+import json
 from datetime import datetime
 from enum import Enum
-from typing import List
+from typing import List, Dict, Any
 
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 
 
 class TranscriptStatusEnum(str, Enum):
@@ -64,3 +65,29 @@ class Analysis(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class TranscriptConfigBase(BaseModel):
+    language: TranscriptLanguageEnum
+    config: Dict[str, Any]
+    provider: str
+
+    @validator('config', pre=True)
+    def make_config_json(cls, v):
+        if isinstance(v, str):
+            return json.loads(v)
+        return v
+    class Config:
+        orm_mode = True
+
+
+class TranscriptConfigCreate(TranscriptConfigBase):
+    pass
+
+
+class TranscriptConfigUpdate(TranscriptConfigBase):
+    pass
+
+
+class TranscriptConfig(TranscriptConfigBase):
+    id: int

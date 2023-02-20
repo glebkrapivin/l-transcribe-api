@@ -11,7 +11,6 @@ import app.transcript.schemas as s
 from app.audio.api.v1 import get_db
 from app.database import SessionLocal
 
-
 router = APIRouter(prefix="/api/v1")
 
 
@@ -77,6 +76,28 @@ def get_transcripts_by_word(word: str, db: Session = Depends(get_db)):
         an_items.append(obj)
     result = s.Analysis(word=word, items=an_items)
     return result
+
+
+@router.get("/private/transcript/config/{config_id}", response_model=s.TranscriptConfig, tags=["Private"])
+def get_transcript_config(config_id: int, db: Session = Depends(get_db)):
+    conf = c.get_transcript_config(config_id, db)
+    if not conf:
+        return HTTPException(status_code=404)
+    return conf
+
+
+@router.put("/private/transcript/config/{config_id}", response_model=s.TranscriptConfig, tags=["Private"])
+def update_transcript_config(config_id: int, conf: s.TranscriptConfigUpdate, db: Session = Depends(get_db)):
+    conf = c.update_transcript_config(config_id, conf.language, conf.provider, conf.config, db)
+    if not conf:
+        return HTTPException(status_code=404)
+    return conf
+
+
+@router.post("/private/transcript/config", response_model=s.TranscriptConfig, tags=["Private"])
+def create_transcript_config(conf: s.TranscriptConfigCreate, db: Session = Depends(get_db)):
+    conf = c.create_transcript_config(conf.language, conf.provider, conf.config, db)
+    return conf
 
 
 @router.on_event('startup')

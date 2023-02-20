@@ -1,4 +1,4 @@
-#/bin/bash
-
-alembic revision --autogenerate
-alembic upgrade head
+##/bin/bash
+#
+#alembic revision --autogenerate
+#alembic upgrade head
