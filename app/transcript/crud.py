@@ -31,6 +31,10 @@ def create_transcript(db: Session, audio_id: int, language: m.TranscriptLanguage
     if not conf:
         raise NotFound('Config not found')
 
+    aud = db.query(m.Transcript)\
+        .filter(m.Transcript.audio_id == audio_id).first()
+    if aud:
+        raise AlreadyExists()
     external_id = google_s2t.create_transcript_request(conf.config, audio.location)
     t = m.Transcript(audio_id=audio_id, status=m.TranscriptStatusEnum.IN_PROGRESS, external_id=external_id,
                      language=language)
