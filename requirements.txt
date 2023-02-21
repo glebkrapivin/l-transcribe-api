@@ -11,3 +11,4 @@ alembic
 fastapi-utils
 google-cloud-speech==2.17.3
 google-cloud-storage
+google-cloud-billing

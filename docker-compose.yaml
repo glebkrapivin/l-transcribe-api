@@ -17,7 +17,7 @@ services:
     ports:
       - "5442:5432"
     volumes:
-      - "leela_postgres_data:/var/lib/postresql/data"
+      - "leela_postgres_data:/var/lib/postgresql/data"
 
 volumes:
   leela_postgres_data:

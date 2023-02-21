@@ -31,7 +31,7 @@ def create_transcript(db: Session, audio_id: int, language: m.TranscriptLanguage
     if not conf:
         raise NotFound('Config not found')
 
-    aud = db.query(m.Transcript)\
+    aud = db.query(m.Transcript) \
         .filter(m.Transcript.audio_id == audio_id).first()
     if aud:
         raise AlreadyExists()
@@ -42,6 +42,7 @@ def create_transcript(db: Session, audio_id: int, language: m.TranscriptLanguage
     try:
         db.commit()
     except IntegrityError:
+        google_s2t.try_delete_transcript_request(t.external_id)
         raise AlreadyExists()
     return t
 

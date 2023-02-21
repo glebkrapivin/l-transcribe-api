@@ -11,7 +11,7 @@ client = speech.SpeechClient()
 storage_client = storage.Client()
 
 
-def _get_lightweight_operation(name: str) -> operations_pb2.Operation:
+def _get_lightweight_operation(name: str) -> operation.Operation:
     # seems like a lazy init
     _ = client.transport.operations_client
     logging.info('%s', type(name))
@@ -67,3 +67,18 @@ def create_transcript_request(config: str, audio_location: str) -> str:
     name = ops._operation.name
     logging.info('Submited task to google s2t with name %s', name)
     return name
+
+
+def try_delete_transcript_request(name: str):
+    try:
+        lightweight_operation = _get_lightweight_operation(name)
+        response: operation.Operation = operation.from_gapic(
+        lightweight_operation,
+        client.transport._operations_client,
+        speech.types.LongRunningRecognizeResponse,
+        metadata_type=speech.types.LongRunningRecognizeMetadata,
+        )
+        response.cancel()
+        logging.info('Deleted transcript request with name %s', name)
+    except Exception as e:
+        logging.exception(str(e))

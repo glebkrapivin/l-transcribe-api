@@ -1,7 +1,8 @@
 import logging
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware import Middleware
 
@@ -9,7 +10,8 @@ from app.audio.api import v1 as av1
 from app.core.config import settings
 from app.transcript.api import v1 as tv1
 
-logging.basicConfig(level='DEBUG', format='%(asctime)s.%(msecs)03d %(levelname)s %(module)s - %(funcName)s: %(message)s')
+logging.basicConfig(level='DEBUG',
+                    format='%(asctime)s.%(msecs)03d %(levelname)s %(module)s - %(funcName)s: %(message)s')
 
 
 def get_application():
@@ -22,9 +24,21 @@ def get_application():
         allow_headers=["*"],
     )
 
-    _app = FastAPI(title=settings.PROJECT_NAME, middleware=[cors])
+    _app = FastAPI(title=settings.PROJECT_NAME, middleware=[cors], dependencies=[Depends(basic_verify_password)])
     return _app
 
+
+security = HTTPBasic()
+
+
+def basic_verify_password(sec: HTTPBasicCredentials = Depends(security)):
+    # TODO: it is not really security, as the password is stored plain text
+    #   just a super-fast way to expose endpoints online for product demo
+    logging.info('Was here')
+    if sec.username == 'admin' and sec.password == 'whereismydemo':
+        return True
+    raise HTTPException(status_code=401, detail='Permission denied', headers={"WWW-Authenticate": "Basic"},
+                        )
 
 
 app = get_application()
