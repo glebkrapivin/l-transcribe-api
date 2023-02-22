@@ -5,6 +5,7 @@ from typing import List
 
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 
 import app.audio.crud as a_crud
 import app.transcript.models as m
@@ -74,7 +75,7 @@ def get_transcript_words(db: Session, transcript_id: int) -> List[m.TranscriptIt
 
 
 def get_transcripts_by_word(db: Session, word: str):
-    items = db.query(m.TranscriptItem).filter(m.TranscriptItem.word == word).all()
+    items = db.query(m.TranscriptItem).filter(func.lower(m.TranscriptItem.word) == word.lower()).all()
     return items
 
 
