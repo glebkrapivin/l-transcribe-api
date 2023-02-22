@@ -7,6 +7,7 @@ from google.longrunning import operations_pb2
 
 # API and auth not straighforward
 # GOOGLE_APPLICATION_CREDENTIALS needs to be exported with key to the service account
+
 client = speech.SpeechClient()
 storage_client = storage.Client()
 

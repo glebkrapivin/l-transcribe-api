@@ -10,6 +10,9 @@ class Settings(BaseSettings):
 
     AUDIOFILES_DIRECTORY: str
 
+    GOOGLE_APPLICATION_CREDENTIALS: str
+
+
     @validator("BACKEND_CORS_ORIGINS", pre=True)
     def assemble_cors_origins(cls, v: Union[str, List[str]]) -> Union[List[str], str]:
         if isinstance(v, str) and not v.startswith("["):
