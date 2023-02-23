@@ -3,28 +3,25 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from app.database import Base
 
-@pytest.fixture(scope='session')
-def db_engine(request):
-    """yields a SQLAlchemy engine which is suppressed after the test session"""
-    engine_ = create_engine('sqlite:///:memory:', echo=True)
-    Base.metadata.create_all(engine_)
-    yield engine_
-
-    engine_.dispose()
+@pytest.fixture(scope="session")
+def connection():
+    engine = create_engine('sqlite:///:memory:', echo=True)
+    return engine.connect()
 
 
-@pytest.fixture(scope='session')
-def db_session_factory(db_engine):
-    """returns a SQLAlchemy scoped session factory"""
-    return scoped_session(sessionmaker(bind=db_engine))
+@pytest.fixture(scope="session")
+def setup_database(connection):
+    Base.metadata.bind = connection
+    Base.metadata.create_all()
 
+    yield
 
-@pytest.fixture(scope='function')
-def db_session(db_session_factory):
-    """yields a SQLAlchemy connection which is rollbacked after the test"""
-    session_ = db_session_factory()
+    Base.metadata.drop_all()
 
-    yield session_
-
-    session_.rollback()
-    session_.close()
+@pytest.fixture
+def db_session(setup_database, connection):
+    transaction = connection.begin()
+    yield scoped_session(
+        sessionmaker(autocommit=False, autoflush=False, bind=connection)
+    )
+    transaction.rollback()

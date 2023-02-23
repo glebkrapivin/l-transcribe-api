@@ -26,6 +26,8 @@ def create_new_transcript(
         raise HTTPException(
             status_code=400, detail="Transcript with this audio already exists"
         )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
     return t
 
 

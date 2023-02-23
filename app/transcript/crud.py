@@ -46,7 +46,7 @@ def create_transcript(db: Session, audio_id: int, language: m.TranscriptLanguage
         db.commit()
     except IntegrityError:
         transcriber.delete(t.external_id)
-        raise AlreadyExists()
+        raise
     return t
 
 
