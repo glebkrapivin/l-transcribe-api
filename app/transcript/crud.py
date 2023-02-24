@@ -63,6 +63,15 @@ def list_transcripts(db: Session, external_id: int = None) -> List[m.Transcript]
     return db.query(m.Transcript).all()
 
 
+def get_transcript_by_id(db: Session, transcript_id: int) -> m.Transcript:
+    t = db.query(m.Transcript).filter(m.Transcript.id == transcript_id).first()
+    if not t:
+        return None
+    if len(t.items) > 0:  # type:ignore
+        t.text = ' '.join([_.word for _ in t.items])  # type: ignore
+    return t
+
+
 def get_transcript_words(db: Session, transcript_id: int) -> List[m.TranscriptItem]:
     items = (
         db.query(m.TranscriptItem)

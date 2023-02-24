@@ -35,7 +35,10 @@ def create_new_transcript(
     "/transcript/{transcript_id}", tags=["Transcript"], response_model=s.TranscriptDetail
 )
 def get_transcript_by_id(transcript_id: int, db: Session = Depends(get_db)):
-    return db.query(m.Transcript).filter(m.Transcript.id == transcript_id).first()
+    t = c.get_transcript_by_id(db, transcript_id)
+    if not t:
+        raise HTTPException(status_code=404, detail="Not found")
+    return t
 
 
 @router.get(
