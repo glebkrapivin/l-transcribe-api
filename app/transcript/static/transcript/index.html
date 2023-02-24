@@ -28,7 +28,7 @@
                     TableRow += "<td>" + val + "</td>";
                 }
             });
-            TableRow += "<td> <button class='btn btn-outline-primary btn-sm'>Text</button></td>";
+            TableRow += "<td> <a href='/api/v1/transcript/"+ value.id+"' class='btn btn-outline-primary btn-sm'>Text</a></td>";
             TableRow += "</tr>";
             $(table).append(TableRow);
         });
@@ -48,7 +48,9 @@
 
     $(document).ready(
         function () {
-            get_data($)
+
+            get_data($);
+
         }
     )
 </script>
@@ -121,5 +123,6 @@
 
     </div>
 </div>
+
 </body>
 </html>
